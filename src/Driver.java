@@ -1,0 +1,58 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+/********************************************************************
+ * File: Driver.java 
+ * Author: Bill Koppelberger 
+ * Due Date: 4/3/14 
+ * CIS 452: Project 3
+ * Prof. Wolffe
+ * 
+ * This Project is a simulation of a Memory Manager. It includes 
+ * a MVC implemented GUI that shows you the Physical Memory and 
+ * allows you to select Processes and see their Page Tables. There 
+ * is 4KB of Physical Memory with a Page Size of 512B. This program
+ * assumes the file being read is of the correct format.
+ * 
+ * Driver.java acts as the Main program and the Controller. It is 
+ * the medium between the Model and the View.
+ *******************************************************************/
+public class Driver {
+
+	/* The main(Controller) of the application */
+	public static void main(String[] args) throws ClassNotFoundException, 
+	InstantiationException, IllegalAccessException, 
+	UnsupportedLookAndFeelException {
+		
+		/* Sets the look and feel of the GUI to Windows Native */
+		UIManager.setLookAndFeel("com.sun.java.swing.plaf."
+				+ "nimbus.NimbusLookAndFeel");
+
+		/* Model */
+		final simulator sim = new simulator();
+
+		/* View */
+		final FramePanel fPanel = new FramePanel(sim);
+
+		// Frame Table GUI
+		JFrame frameFrame = new JFrame("Physical Memory");
+		frameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frameFrame.getContentPane().add(fPanel);
+		frameFrame.setSize(400, 400);
+		frameFrame.setVisible(true);
+
+		/* ActionListener for the 'Next' JButton */
+		class NextListener implements ActionListener {
+			public void actionPerformed(ActionEvent e) {
+				sim.doNextProcess();
+				fPanel.updateFrameInfo();
+			}
+		}
+
+		fPanel.addNextListener(new NextListener());
+	}
+}
